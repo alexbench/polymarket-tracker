@@ -32,10 +32,15 @@ export async function POST(request: NextRequest) {
         // Get subscription details to check if it's a trial
         const subscription = await stripe.subscriptions.retrieve(
           session.subscription as string
-        )
+        ) as Stripe.Subscription
 
         const trialEnd = subscription.trial_end
           ? new Date(subscription.trial_end * 1000)
+          : null
+
+        // Get current period end from the first subscription item
+        const currentPeriodEnd = subscription.items.data[0]?.current_period_end
+          ? new Date(subscription.items.data[0].current_period_end * 1000)
           : null
 
         await prisma.user.update({
@@ -45,7 +50,7 @@ export async function POST(request: NextRequest) {
             subscriptionId: session.subscription as string,
             subscriptionStatus: subscription.status === 'trialing' ? 'TRIALING' : 'ACTIVE',
             trialEndDate: trialEnd,
-            currentPeriodEnd: new Date(subscription.current_period_end * 1000),
+            currentPeriodEnd,
           },
         })
       }
@@ -61,11 +66,15 @@ export async function POST(request: NextRequest) {
 
       if (userId) {
         const status = mapStripeStatus(subscription.status)
+        const currentPeriodEnd = subscription.items.data[0]?.current_period_end
+          ? new Date(subscription.items.data[0].current_period_end * 1000)
+          : null
+
         await prisma.user.update({
           where: { id: userId },
           data: {
             subscriptionStatus: status as any,
-            currentPeriodEnd: new Date(subscription.current_period_end * 1000),
+            currentPeriodEnd,
           },
         })
       }

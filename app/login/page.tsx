@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, Suspense } from 'react'
 import { signIn } from 'next-auth/react'
 import Link from 'next/link'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
@@ -31,7 +31,7 @@ function GoogleIcon({ className }: { className?: string }) {
   )
 }
 
-export default function LoginPage() {
+function LoginForm() {
   const searchParams = useSearchParams()
   const callbackUrl = searchParams.get('callbackUrl') || '/'
   const error = searchParams.get('error')
@@ -49,96 +49,104 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl">PolyTrax</CardTitle>
-          <p className="text-muted-foreground text-sm mt-2">
-            Sign in to track wallets and receive notifications
-          </p>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {error && (
-            <div className="bg-destructive/10 text-destructive text-sm p-3 rounded">
-              Authentication failed. Please try again.
-            </div>
-          )}
+    <Card className="w-full max-w-md">
+      <CardHeader className="text-center">
+        <CardTitle className="text-2xl">PolyTrax</CardTitle>
+        <p className="text-muted-foreground text-sm mt-2">
+          Sign in to track wallets and receive notifications
+        </p>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        {error && (
+          <div className="bg-destructive/10 text-destructive text-sm p-3 rounded">
+            Authentication failed. Please try again.
+          </div>
+        )}
 
-          {registered && (
-            <div className="bg-green-500/10 text-green-600 text-sm p-3 rounded">
-              Account created successfully. Please sign in.
-            </div>
-          )}
+        {registered && (
+          <div className="bg-green-500/10 text-green-600 text-sm p-3 rounded">
+            Account created successfully. Please sign in.
+          </div>
+        )}
 
-          <form onSubmit={handleCredentialsLogin} className="space-y-4">
-            <div className="space-y-2">
-              <label htmlFor="email" className="text-sm font-medium">
-                Email
-              </label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="you@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </div>
-
-            <div className="space-y-2">
-              <label htmlFor="password" className="text-sm font-medium">
-                Password
-              </label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="Your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </div>
-
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? 'Signing in...' : 'Sign In'}
-            </Button>
-          </form>
-
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t" />
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-background px-2 text-muted-foreground">
-                Or continue with
-              </span>
-            </div>
+        <form onSubmit={handleCredentialsLogin} className="space-y-4">
+          <div className="space-y-2">
+            <label htmlFor="email" className="text-sm font-medium">
+              Email
+            </label>
+            <Input
+              id="email"
+              type="email"
+              placeholder="you@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
           </div>
 
-          <Button
-            variant="outline"
-            className="w-full"
-            onClick={() => signIn('google', { callbackUrl })}
-          >
-            <GoogleIcon className="w-4 h-4 mr-2" />
-            Continue with Google
+          <div className="space-y-2">
+            <label htmlFor="password" className="text-sm font-medium">
+              Password
+            </label>
+            <Input
+              id="password"
+              type="password"
+              placeholder="Your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+
+          <Button type="submit" className="w-full" disabled={loading}>
+            {loading ? 'Signing in...' : 'Sign In'}
           </Button>
+        </form>
 
-          <div className="text-center text-sm text-muted-foreground">
-            Don&apos;t have an account?{' '}
-            <Link href="/register" className="text-primary hover:underline">
-              Sign up
-            </Link>
+        <div className="relative">
+          <div className="absolute inset-0 flex items-center">
+            <span className="w-full border-t" />
           </div>
+          <div className="relative flex justify-center text-xs uppercase">
+            <span className="bg-background px-2 text-muted-foreground">
+              Or continue with
+            </span>
+          </div>
+        </div>
 
-          <div className="text-center text-xs text-muted-foreground space-y-2 pt-4">
-            <p>
-              New users get a <strong>7-day free trial</strong>
-            </p>
-            <p>Then $50/month for unlimited tracking</p>
-          </div>
-        </CardContent>
-      </Card>
+        <Button
+          variant="outline"
+          className="w-full"
+          onClick={() => signIn('google', { callbackUrl })}
+        >
+          <GoogleIcon className="w-4 h-4 mr-2" />
+          Continue with Google
+        </Button>
+
+        <div className="text-center text-sm text-muted-foreground">
+          Don&apos;t have an account?{' '}
+          <Link href="/register" className="text-primary hover:underline">
+            Sign up
+          </Link>
+        </div>
+
+        <div className="text-center text-xs text-muted-foreground space-y-2 pt-4">
+          <p>
+            New users get a <strong>7-day free trial</strong>
+          </p>
+          <p>Then $50/month for unlimited tracking</p>
+        </div>
+      </CardContent>
+    </Card>
+  )
+}
+
+export default function LoginPage() {
+  return (
+    <div className="min-h-screen bg-background flex items-center justify-center p-4">
+      <Suspense fallback={<div className="animate-pulse">Loading...</div>}>
+        <LoginForm />
+      </Suspense>
     </div>
   )
 }

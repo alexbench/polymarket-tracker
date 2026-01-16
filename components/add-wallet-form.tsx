@@ -8,14 +8,14 @@ import { isValidEthAddress } from '@/lib/utils'
 import { toast } from 'sonner'
 
 interface AddWalletFormProps {
-  onAdd: (address: string, label?: string) => boolean
+  onAdd: (address: string, label?: string) => boolean | Promise<boolean>
 }
 
 export function AddWalletForm({ onAdd }: AddWalletFormProps) {
   const [address, setAddress] = useState('')
   const [isAdding, setIsAdding] = useState(false)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
     const trimmed = address.trim()
@@ -32,7 +32,7 @@ export function AddWalletForm({ onAdd }: AddWalletFormProps) {
 
     setIsAdding(true)
 
-    const success = onAdd(trimmed)
+    const success = await onAdd(trimmed)
 
     if (success) {
       toast.success('Wallet added')

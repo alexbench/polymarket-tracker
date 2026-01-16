@@ -52,8 +52,11 @@ declare module 'next-auth' {
       name?: string | null
       email?: string | null
       image?: string | null
+      phone?: string | null
+      emailVerified?: Date | null
       subscriptionStatus: string
       trialEndDate?: Date
+      stripeCustomerId?: string | null
       hasActiveSubscription: boolean
     }
   }

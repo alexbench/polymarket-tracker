@@ -1,4 +1,4 @@
-import { Trade } from '@/types'
+import { Trade, LeaderboardEntry, LeaderboardTimeFilter, LeaderboardSortBy } from '@/types'
 
 const BASE_URL = process.env.NEXT_PUBLIC_POLYMARKET_API_URL || 'https://data-api.polymarket.com'
 
@@ -79,4 +79,46 @@ export async function fetchMultipleWalletActivity(
   return results
     .flat()
     .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+}
+
+export interface FetchLeaderboardOptions {
+  timePeriod?: LeaderboardTimeFilter
+  orderBy?: LeaderboardSortBy
+  limit?: number
+}
+
+export async function fetchLeaderboard(
+  options: FetchLeaderboardOptions = {}
+): Promise<LeaderboardEntry[]> {
+  const { timePeriod = 'ALL', orderBy = 'PNL', limit = 50 } = options
+
+  const params = new URLSearchParams({
+    timePeriod,
+    orderBy,
+    limit: String(limit),
+  })
+
+  const response = await fetch(`${BASE_URL}/v1/leaderboard?${params}`, {
+    headers: {
+      Accept: 'application/json',
+    },
+    next: { revalidate: 60 },
+  })
+
+  if (!response.ok) {
+    throw new Error(`Polymarket API error: ${response.status}`)
+  }
+
+  const data = await response.json()
+
+  return data.map((item: any, index: number) => ({
+    rank: item.rank ?? index + 1,
+    proxyWallet: item.proxyWallet || '',
+    userName: item.userName || '',
+    xUsername: item.xUsername || '',
+    verifiedBadge: item.verifiedBadge || false,
+    vol: Number(item.vol) || 0,
+    pnl: Number(item.pnl) || 0,
+    profileImage: item.profileImage || '',
+  }))
 }

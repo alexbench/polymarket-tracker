@@ -44,6 +44,21 @@ export interface InAppNotification {
   createdAt: string
 }
 
+// Leaderboard types
+export type LeaderboardTimeFilter = 'DAY' | 'WEEK' | 'MONTH' | 'ALL'
+export type LeaderboardSortBy = 'PNL' | 'VOL'
+
+export interface LeaderboardEntry {
+  rank: number
+  proxyWallet: string
+  userName: string
+  xUsername: string
+  verifiedBadge: boolean
+  vol: number
+  pnl: number
+  profileImage: string
+}
+
 // NextAuth type extensions
 declare module 'next-auth' {
   interface Session {

@@ -110,16 +110,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   },
   events: {
     async createUser({ user }) {
-      // Start 7-day free trial for new users (Google OAuth)
-      const trialStart = new Date()
-      const trialEnd = new Date(trialStart.getTime() + 7 * 24 * 60 * 60 * 1000)
-
+      // New Google OAuth users start with NONE status
+      // They must complete payment checkout to get a subscription
       await prisma.user.update({
         where: { id: user.id },
         data: {
-          subscriptionStatus: 'TRIALING',
-          trialStartDate: trialStart,
-          trialEndDate: trialEnd,
+          subscriptionStatus: 'NONE',
         },
       })
     },

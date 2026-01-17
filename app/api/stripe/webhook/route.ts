@@ -6,7 +6,8 @@ import Stripe from 'stripe'
 
 export async function POST(request: NextRequest) {
   const body = await request.text()
-  const signature = headers().get('stripe-signature')!
+  const headersList = await headers()
+  const signature = headersList.get('stripe-signature')!
 
   let event: Stripe.Event
 
@@ -24,6 +25,17 @@ export async function POST(request: NextRequest) {
   switch (event.type) {
     case 'checkout.session.completed': {
       const session = event.data.object as Stripe.Checkout.Session
+
+      // Check if this is a new user registration (has registration metadata)
+      // New user creation is handled by the complete-registration route
+      if (session.metadata?.registrationEmail) {
+        // This is a registration checkout - user will be created by complete-registration
+        // Just log and skip
+        console.log('Registration checkout completed for:', session.metadata.registrationEmail)
+        break
+      }
+
+      // Existing user checkout flow
       const userId =
         session.metadata?.userId ||
         (await getUserIdFromCustomer(session.customer as string))

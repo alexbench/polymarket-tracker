@@ -36,6 +36,7 @@ function LoginForm() {
   const callbackUrl = searchParams.get('callbackUrl') || '/'
   const error = searchParams.get('error')
   const registered = searchParams.get('registered')
+  const reset = searchParams.get('reset')
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -69,6 +70,12 @@ function LoginForm() {
           </div>
         )}
 
+        {reset && (
+          <div className="bg-green-500/10 text-green-600 text-sm p-3 rounded">
+            Password reset successfully. Please sign in with your new password.
+          </div>
+        )}
+
         <form onSubmit={handleCredentialsLogin} className="space-y-4">
           <div className="space-y-2">
             <label htmlFor="email" className="text-sm font-medium">
@@ -85,9 +92,14 @@ function LoginForm() {
           </div>
 
           <div className="space-y-2">
-            <label htmlFor="password" className="text-sm font-medium">
-              Password
-            </label>
+            <div className="flex justify-between items-center">
+              <label htmlFor="password" className="text-sm font-medium">
+                Password
+              </label>
+              <Link href="/forgot-password" className="text-xs text-primary hover:underline">
+                Forgot password?
+              </Link>
+            </div>
             <Input
               id="password"
               type="password"

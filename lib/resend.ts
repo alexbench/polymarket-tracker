@@ -95,7 +95,7 @@ export async function sendEmail(
   try {
     const resend = getResendClient()
     await resend.emails.send({
-      from: 'PolyTrax <alerts@resend.dev>',
+      from: 'PolyTrax <noreply@polytrax.io>',
       to,
       subject,
       html,
@@ -109,5 +109,59 @@ export async function sendEmail(
 
 export async function sendTradeAlertEmail(to: string, trades: Trade[]): Promise<boolean> {
   const { subject, html } = formatTradeForEmail(trades)
+  return sendEmail(to, subject, html)
+}
+
+export async function sendPasswordResetEmail(to: string, resetUrl: string): Promise<boolean> {
+  const subject = 'Reset your PolyTrax password'
+  const html = `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      </head>
+      <body style="margin: 0; padding: 0; background-color: #0a0a0a; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+        <div style="max-width: 600px; margin: 0 auto; background-color: #141414;">
+          <div style="padding: 20px; border-bottom: 1px solid #262626;">
+            <h1 style="margin: 0; color: #fafafa; font-size: 16px; font-weight: 500;">
+              PolyTrax
+            </h1>
+          </div>
+          <div style="padding: 40px 20px;">
+            <h2 style="margin: 0 0 16px 0; color: #fafafa; font-size: 20px; font-weight: 500;">
+              Reset your password
+            </h2>
+            <p style="margin: 0 0 24px 0; color: #a3a3a3; font-size: 14px; line-height: 1.5;">
+              We received a request to reset your password. Click the button below to create a new password. This link will expire in 1 hour.
+            </p>
+            <table cellpadding="0" cellspacing="0" border="0" style="margin: 0 0 24px 0;">
+              <tr>
+                <td style="background-color: #3b82f6; border-radius: 6px;">
+                  <a href="${resetUrl}" target="_blank" style="display: inline-block; color: #ffffff; text-decoration: none; padding: 12px 24px; font-size: 14px; font-weight: 500;">
+                    Reset Password
+                  </a>
+                </td>
+              </tr>
+            </table>
+            <p style="margin: 0 0 16px 0; color: #a3a3a3; font-size: 12px; line-height: 1.5;">
+              Or copy and paste this link into your browser:
+            </p>
+            <p style="margin: 0 0 24px 0; color: #3b82f6; font-size: 12px; word-break: break-all;">
+              <a href="${resetUrl}" style="color: #3b82f6; text-decoration: underline;">${resetUrl}</a>
+            </p>
+            <p style="margin: 0; color: #737373; font-size: 12px; line-height: 1.5;">
+              If you didn't request this password reset, you can safely ignore this email. Your password will remain unchanged.
+            </p>
+          </div>
+          <div style="padding: 20px; border-top: 1px solid #262626;">
+            <p style="margin: 0; color: #525252; font-size: 12px;">
+              This is an automated email from PolyTrax. Please do not reply.
+            </p>
+          </div>
+        </div>
+      </body>
+    </html>
+  `
   return sendEmail(to, subject, html)
 }

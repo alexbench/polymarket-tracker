@@ -82,9 +82,34 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         }
       }
 
-      // Allow updating session from client
-      if (trigger === 'update' && session) {
-        return { ...token, ...session }
+      // Allow updating session from client - refetch from DB if requested
+      if (trigger === 'update') {
+        if (session?.refresh && token.id) {
+          // Refetch user data from database
+          const dbUser = await prisma.user.findUnique({
+            where: { id: token.id as string },
+            select: {
+              id: true,
+              email: true,
+              name: true,
+              image: true,
+              phone: true,
+              emailVerified: true,
+              subscriptionStatus: true,
+              trialEndDate: true,
+              stripeCustomerId: true,
+            },
+          })
+
+          if (dbUser) {
+            token.subscriptionStatus = dbUser.subscriptionStatus
+            token.trialEndDate = dbUser.trialEndDate?.toISOString()
+            token.stripeCustomerId = dbUser.stripeCustomerId
+            token.phone = dbUser.phone
+          }
+        } else if (session) {
+          return { ...token, ...session }
+        }
       }
 
       return token

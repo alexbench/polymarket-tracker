@@ -21,7 +21,7 @@ function OnboardingForm() {
   // Refresh session after checkout to get updated subscription status
   useEffect(() => {
     if (checkoutSuccess) {
-      update()
+      update({ refresh: true })  // Tell JWT callback to refetch from DB
     }
   }, [checkoutSuccess, update])
 

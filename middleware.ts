@@ -43,7 +43,12 @@ export default auth((req) => {
     const hasActiveSubscription =
       subscriptionStatus === 'ACTIVE' || subscriptionStatus === 'TRIALING'
 
-    if (!hasActiveSubscription) {
+    // Allow onboarding page when coming from checkout success
+    // The page will refresh the session client-side
+    const isCheckoutReturn = pathname === '/onboarding' &&
+      req.nextUrl.searchParams.get('checkout') === 'success'
+
+    if (!hasActiveSubscription && !isCheckoutReturn) {
       // Redirect to checkout
       return NextResponse.redirect(new URL('/checkout', req.url))
     }

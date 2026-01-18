@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, Suspense } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
@@ -17,6 +17,13 @@ function OnboardingForm() {
   const [phone, setPhone] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+
+  // Refresh session after checkout to get updated subscription status
+  useEffect(() => {
+    if (checkoutSuccess) {
+      update()
+    }
+  }, [checkoutSuccess, update])
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()

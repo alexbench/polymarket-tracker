@@ -23,15 +23,22 @@ function CheckoutForm() {
         body: JSON.stringify({}),
       })
 
-      const data = await res.json()
+      const text = await res.text()
+      let data
+      try {
+        data = JSON.parse(text)
+      } catch {
+        setError(`Server error: ${res.status} - ${text.slice(0, 100)}`)
+        return
+      }
 
       if (data.url) {
         window.location.href = data.url
       } else {
         setError(data.error || 'Failed to create checkout session')
       }
-    } catch {
-      setError('Something went wrong')
+    } catch (err) {
+      setError(`Something went wrong: ${err instanceof Error ? err.message : String(err)}`)
     } finally {
       setLoading(false)
     }

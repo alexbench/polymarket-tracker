@@ -82,6 +82,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
 
+    // Check if user already has an active subscription
+    if (user.subscriptionStatus === 'ACTIVE' || user.subscriptionStatus === 'TRIALING') {
+      return NextResponse.json(
+        { error: 'You already have an active subscription' },
+        { status: 400 }
+      )
+    }
+
     // Create or retrieve Stripe customer
     let stripeCustomerId = user.stripeCustomerId
 

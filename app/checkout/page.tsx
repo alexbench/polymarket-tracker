@@ -1,16 +1,26 @@
 'use client'
 
-import { useState, Suspense } from 'react'
-import { useSearchParams } from 'next/navigation'
+import { useState, useEffect, Suspense } from 'react'
+import { useSearchParams, useRouter } from 'next/navigation'
+import { useSession } from 'next-auth/react'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { CreditCard, Check } from 'lucide-react'
 
 function CheckoutForm() {
+  const router = useRouter()
   const searchParams = useSearchParams()
+  const { data: session } = useSession()
   const canceled = searchParams.get('canceled')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+
+  // Redirect users who already have an active subscription
+  useEffect(() => {
+    if (session?.user?.hasActiveSubscription) {
+      router.replace('/')
+    }
+  }, [session, router])
 
   async function handleCheckout() {
     setLoading(true)

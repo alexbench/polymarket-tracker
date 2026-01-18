@@ -182,7 +182,7 @@ function RegisterForm() {
             variant="outline"
             className="w-full"
             type="button"
-            onClick={() => signIn('google', { callbackUrl: '/onboarding' })}
+            onClick={() => signIn('google', { callbackUrl: '/checkout' })}
           >
             <GoogleIcon className="w-4 h-4 mr-2" />
             Continue with Google

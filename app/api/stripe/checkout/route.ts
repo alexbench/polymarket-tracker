@@ -5,8 +5,13 @@ import { prisma } from '@/lib/prisma'
 import { stripe, PRICE_ID } from '@/lib/stripe'
 
 export async function POST(request: NextRequest) {
-  const body = await request.json()
-  const { registration } = body
+  let body = {}
+  try {
+    body = await request.json()
+  } catch {
+    // Empty body is fine for existing user checkout
+  }
+  const { registration } = body as { registration?: { email: string; password: string; name?: string } }
 
   // New user registration flow
   if (registration) {

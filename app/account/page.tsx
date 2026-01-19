@@ -7,7 +7,22 @@ import Link from 'next/link'
 import { ArrowLeft, LogOut, User, Phone, Mail, CreditCard, Bell, Save, Send, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { Select } from '@/components/ui/select'
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card'
+
+const COUNTRY_CODES = [
+  { code: 'US', name: 'United States', dial: '+1' },
+  { code: 'CA', name: 'Canada', dial: '+1' },
+  { code: 'GB', name: 'United Kingdom', dial: '+44' },
+  { code: 'AU', name: 'Australia', dial: '+61' },
+  { code: 'DE', name: 'Germany', dial: '+49' },
+  { code: 'FR', name: 'France', dial: '+33' },
+  { code: 'JP', name: 'Japan', dial: '+81' },
+  { code: 'IN', name: 'India', dial: '+91' },
+  { code: 'BR', name: 'Brazil', dial: '+55' },
+  { code: 'MX', name: 'Mexico', dial: '+52' },
+  { code: 'OTHER', name: 'Other', dial: '' },
+]
 
 function formatDate(date: Date | string | undefined) {
   if (!date) return 'N/A'
@@ -40,6 +55,8 @@ export default function AccountPage() {
 
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
+  const [countryCode, setCountryCode] = useState('US')
+  const [customDialCode, setCustomDialCode] = useState('')
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
   const [error, setError] = useState('')
@@ -57,7 +74,29 @@ export default function AccountPage() {
   useEffect(() => {
     if (session?.user) {
       setName(session.user.name || '')
-      setPhone(session.user.phone || '')
+      const existingPhone = session.user.phone || ''
+      if (existingPhone) {
+        // Try to match country code from existing phone
+        const matchedCountry = COUNTRY_CODES.find(
+          (c) => c.dial && existingPhone.startsWith(c.dial)
+        )
+        if (matchedCountry && matchedCountry.code !== 'OTHER') {
+          setCountryCode(matchedCountry.code)
+          setPhone(existingPhone.slice(matchedCountry.dial.length))
+        } else if (existingPhone.startsWith('+')) {
+          // Phone has a country code we don't recognize - extract it
+          const dialMatch = existingPhone.match(/^(\+\d{1,4})/)
+          if (dialMatch) {
+            setCountryCode('OTHER')
+            setCustomDialCode(dialMatch[1])
+            setPhone(existingPhone.slice(dialMatch[1].length))
+          } else {
+            setPhone(existingPhone)
+          }
+        } else {
+          setPhone(existingPhone)
+        }
+      }
     }
   }, [session])
 
@@ -67,10 +106,15 @@ export default function AccountPage() {
     setSaved(false)
 
     try {
+      const dialCode = countryCode === 'OTHER'
+        ? customDialCode
+        : COUNTRY_CODES.find((c) => c.code === countryCode)?.dial || '+1'
+      const fullPhone = phone ? `${dialCode}${phone.replace(/\D/g, '')}` : ''
+
       const res = await fetch('/api/user', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, phone }),
+        body: JSON.stringify({ name, phone: fullPhone }),
       })
 
       if (!res.ok) {
@@ -79,7 +123,7 @@ export default function AccountPage() {
         return
       }
 
-      await update({ name, phone })
+      await update({ name, phone: fullPhone })
       setSaved(true)
       setTimeout(() => setSaved(false), 3000)
     } catch {
@@ -113,10 +157,15 @@ export default function AccountPage() {
     setError('')
     setTestSuccess(null)
     try {
+      const dialCode = countryCode === 'OTHER'
+        ? customDialCode
+        : COUNTRY_CODES.find((c) => c.code === countryCode)?.dial || '+1'
+      const fullPhone = `${dialCode}${phone.replace(/\D/g, '')}`
+
       const res = await fetch('/api/test-notification', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type: 'sms', to: phone }),
+        body: JSON.stringify({ type: 'sms', to: fullPhone }),
       })
       if (!res.ok) {
         const data = await res.json()
@@ -250,17 +299,37 @@ export default function AccountPage() {
               </div>
 
               <div className="space-y-2">
-                <label htmlFor="phone" className="text-sm font-medium flex items-center gap-2">
+                <label className="text-sm font-medium flex items-center gap-2">
                   <Phone className="w-4 h-4" />
                   Phone Number (for SMS alerts)
                 </label>
                 <div className="flex gap-2">
+                  <Select
+                    value={countryCode}
+                    onChange={(e) => setCountryCode(e.target.value)}
+                    className="w-[140px]"
+                  >
+                    {COUNTRY_CODES.map((country) => (
+                      <option key={country.code} value={country.code}>
+                        {country.code === 'OTHER' ? 'Other' : `${country.dial} ${country.code}`}
+                      </option>
+                    ))}
+                  </Select>
+                  {countryCode === 'OTHER' && (
+                    <Input
+                      type="text"
+                      value={customDialCode}
+                      onChange={(e) => setCustomDialCode(e.target.value)}
+                      placeholder="+XX"
+                      className="w-[80px]"
+                    />
+                  )}
                   <Input
                     id="phone"
                     type="tel"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    placeholder="+1 (555) 123-4567"
+                    placeholder="(555) 123-4567"
                     className="flex-1"
                   />
                   <Button
@@ -278,7 +347,7 @@ export default function AccountPage() {
                   </Button>
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  Include country code. Click <Send className="w-3 h-3 inline" /> to send a test SMS.
+                  Select your country and enter your phone number.
                 </p>
               </div>
 

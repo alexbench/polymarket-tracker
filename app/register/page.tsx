@@ -94,20 +94,48 @@ function RegisterForm() {
           Sign up to start tracking wallets
         </p>
       </CardHeader>
-      <CardContent>
+      <CardContent className="space-y-4">
+        {error && (
+          <div className="bg-destructive/10 text-destructive text-sm p-3 rounded">
+            {error}
+          </div>
+        )}
+
+        {canceled && (
+          <div className="bg-yellow-500/10 text-yellow-600 text-sm p-3 rounded">
+            Checkout was canceled. Please try again to complete your registration.
+          </div>
+        )}
+
+        {/* Primary: Google Sign Up */}
+        <Button
+          type="button"
+          size="lg"
+          className="w-full bg-green-600 hover:bg-green-700 text-white"
+          onClick={() => signIn('google', { callbackUrl: '/checkout' })}
+        >
+          <GoogleIcon className="w-5 h-5 mr-2" />
+          Continue with Google
+        </Button>
+
+        <p className="text-center text-xs text-muted-foreground">
+          Recommended - Quick and secure
+        </p>
+
+        {/* Divider */}
+        <div className="relative py-2">
+          <div className="absolute inset-0 flex items-center">
+            <span className="w-full border-t" />
+          </div>
+          <div className="relative flex justify-center text-xs uppercase">
+            <span className="bg-background px-2 text-muted-foreground">
+              Or sign up with email
+            </span>
+          </div>
+        </div>
+
+        {/* Secondary: Email form */}
         <form onSubmit={handleSubmit} className="space-y-4">
-          {error && (
-            <div className="bg-destructive/10 text-destructive text-sm p-3 rounded">
-              {error}
-            </div>
-          )}
-
-          {canceled && (
-            <div className="bg-yellow-500/10 text-yellow-600 text-sm p-3 rounded">
-              Checkout was canceled. Please try again to complete your registration.
-            </div>
-          )}
-
           <div className="space-y-2">
             <label htmlFor="name" className="text-sm font-medium">
               Name (optional)
@@ -163,45 +191,24 @@ function RegisterForm() {
             />
           </div>
 
-          <Button type="submit" className="w-full" disabled={loading}>
+          <Button type="submit" variant="outline" className="w-full" disabled={loading}>
             {loading ? 'Creating account...' : 'Continue to Payment'}
           </Button>
-
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t" />
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-background px-2 text-muted-foreground">
-                Or continue with
-              </span>
-            </div>
-          </div>
-
-          <Button
-            variant="outline"
-            className="w-full"
-            type="button"
-            onClick={() => signIn('google', { callbackUrl: '/checkout' })}
-          >
-            <GoogleIcon className="w-4 h-4 mr-2" />
-            Continue with Google
-          </Button>
-
-          <div className="text-center text-sm text-muted-foreground">
-            Already have an account?{' '}
-            <Link href="/login" className="text-primary hover:underline">
-              Sign in
-            </Link>
-          </div>
-
-          <div className="text-center text-xs text-muted-foreground space-y-2 pt-4">
-            <p>
-              <strong>7-day free trial</strong> - No charge until trial ends
-            </p>
-            <p>Then $50/month for unlimited tracking</p>
-          </div>
         </form>
+
+        <div className="text-center text-sm text-muted-foreground">
+          Already have an account?{' '}
+          <Link href="/login" className="text-primary hover:underline">
+            Sign in
+          </Link>
+        </div>
+
+        <div className="text-center text-xs text-muted-foreground space-y-2 pt-4">
+          <p>
+            <strong>7-day free trial</strong> - No charge until trial ends
+          </p>
+          <p>Then $50/month for unlimited tracking</p>
+        </div>
       </CardContent>
     </Card>
   )

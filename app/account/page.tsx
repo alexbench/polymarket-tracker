@@ -355,7 +355,7 @@ export default function AccountPage() {
                 onClick={handleManageBilling}
                 disabled={billingLoading}
               >
-                {billingLoading ? 'Loading...' : 'Manage Billing & Cancel'}
+                {billingLoading ? 'Loading...' : 'Manage Billing'}
               </Button>
             )}
 

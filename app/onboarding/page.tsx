@@ -82,7 +82,7 @@ function OnboardingForm() {
 
           <div className="space-y-2">
             <label htmlFor="phone" className="text-sm font-medium">
-              Phone Number
+              Phone Number (opt in to SMS alerts)
             </label>
             <div className="relative">
               <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />

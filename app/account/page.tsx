@@ -301,7 +301,7 @@ export default function AccountPage() {
               <div className="space-y-2">
                 <label className="text-sm font-medium flex items-center gap-2">
                   <Phone className="w-4 h-4" />
-                  Phone Number (for SMS alerts)
+                  Phone Number (opt in to SMS alerts)
                 </label>
                 <div className="flex gap-2">
                   <Select

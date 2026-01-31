@@ -96,7 +96,7 @@ function OnboardingForm() {
               />
             </div>
             <p className="text-xs text-muted-foreground">
-              Include country code. US numbers: +1
+              Include country code (US: +1). Your contact information is never shared with third parties.
             </p>
           </div>
 

@@ -347,7 +347,7 @@ export default function AccountPage() {
                   </Button>
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  Select your country and enter your phone number.
+                  Your contact information is never shared with third parties.
                 </p>
               </div>
 

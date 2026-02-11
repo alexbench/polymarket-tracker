@@ -18,13 +18,22 @@ export default auth((req) => {
   const isProtectedApi = protectedApiRoutes.some((route) => pathname.startsWith(route))
   const requiresSubscription = subscriptionRequiredRoutes.some((route) => pathname.startsWith(route))
 
-  // Allow checkout page for authenticated users
+  // Allow checkout page for authenticated users without active subscription
   if (pathname === '/checkout') {
     if (!isAuthenticated) {
       const loginUrl = new URL('/login', req.url)
       loginUrl.searchParams.set('callbackUrl', '/checkout')
       return NextResponse.redirect(loginUrl)
     }
+
+    // Redirect active subscribers to home - they don't need checkout
+    const hasActiveSubscription =
+      subscriptionStatus === 'ACTIVE' || subscriptionStatus === 'TRIALING'
+
+    if (hasActiveSubscription) {
+      return NextResponse.redirect(new URL('/', req.url))
+    }
+
     return NextResponse.next()
   }
 

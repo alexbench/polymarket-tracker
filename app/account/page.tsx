@@ -298,6 +298,7 @@ export default function AccountPage() {
                 />
               </div>
 
+              {/* Phone number field hidden - SMS notifications temporarily disabled
               <div className="space-y-2">
                 <label className="text-sm font-medium flex items-center gap-2">
                   <Phone className="w-4 h-4" />
@@ -350,6 +351,7 @@ export default function AccountPage() {
                   Your contact information is never shared with third parties.
                 </p>
               </div>
+              */}
 
               <div className="space-y-2">
                 <label className="text-sm font-medium flex items-center gap-2">

@@ -86,7 +86,7 @@ function CheckoutForm() {
           </div>
           <div className="flex items-center gap-3">
             <Check className="w-5 h-5 text-green-600" />
-            <span className="text-sm">SMS & email notifications</span>
+            <span className="text-sm">Email notifications</span>
           </div>
           <div className="flex items-center gap-3">
             <Check className="w-5 h-5 text-green-600" />

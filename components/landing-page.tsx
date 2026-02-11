@@ -30,7 +30,7 @@ export function LandingPage() {
             Track Polymarket Wallets in Real-Time
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Get instant SMS and email notifications when the wallets you follow make trades.
+            Get instant email notifications when the wallets you follow make trades.
             Never miss a move from your favorite traders.
           </p>
           <div className="flex justify-center gap-4 pt-4">
@@ -74,7 +74,7 @@ export function LandingPage() {
                 </div>
                 <h3 className="font-semibold">Instant Notifications</h3>
                 <p className="text-sm text-muted-foreground">
-                  Receive SMS and email alerts the moment a tracked wallet makes a trade.
+                  Receive email alerts the moment a tracked wallet makes a trade.
                 </p>
               </div>
             </CardContent>
@@ -109,7 +109,7 @@ export function LandingPage() {
             </div>
             <div className="space-y-2">
               <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center mx-auto font-semibold">3</div>
-              <p className="text-sm">Set up SMS/email alerts</p>
+              <p className="text-sm">Set up email alerts</p>
             </div>
             <div className="space-y-2">
               <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center mx-auto font-semibold">4</div>

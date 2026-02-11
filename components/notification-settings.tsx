@@ -184,7 +184,7 @@ export function NotificationSettings({ wallets }: NotificationSettingsProps) {
 
   return (
     <div className="space-y-4">
-      {/* SMS Notifications */}
+      {/* SMS Notifications - temporarily hidden for compliance
       <Card>
         <CardHeader className="flex flex-row items-center gap-3">
           <Phone className="w-4 h-4 text-muted-foreground" />
@@ -252,6 +252,7 @@ export function NotificationSettings({ wallets }: NotificationSettingsProps) {
           )}
         </CardContent>
       </Card>
+      */}
 
       {/* Email Notifications */}
       <Card>

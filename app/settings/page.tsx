@@ -76,7 +76,7 @@ export default function SettingsPage() {
                 Data is fetched from the Polymarket Data API. Wallet addresses are stored locally in your browser.
               </p>
               <p className="text-xs">
-                Notifications require Vercel KV, Twilio (SMS), and Resend (email) configuration.
+                Notifications require Vercel KV and Resend (email) configuration.
               </p>
             </CardContent>
           </Card>

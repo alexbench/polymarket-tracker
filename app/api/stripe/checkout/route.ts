@@ -115,7 +115,7 @@ export async function POST(request: NextRequest) {
       payment_method_types: ['card'],
       payment_method_collection: 'always',
       line_items: [{ price: PRICE_ID, quantity: 1 }],
-      success_url: `${process.env.NEXT_PUBLIC_APP_URL}/onboarding?checkout=success`,
+      success_url: `${process.env.NEXT_PUBLIC_APP_URL}/?checkout=success`,
       cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/checkout?canceled=true`,
       subscription_data: {
         trial_period_days: 7,

@@ -13,6 +13,12 @@ export function LandingPage() {
         <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
           <h1 className="text-base font-medium">PolyTrax</h1>
           <div className="flex items-center gap-2">
+            <Link href="/about">
+              <Button variant="ghost" size="sm">About Us</Button>
+            </Link>
+            <Link href="/terms">
+              <Button variant="ghost" size="sm">Terms</Button>
+            </Link>
             <Link href="/login">
               <Button variant="ghost" size="sm">Sign In</Button>
             </Link>

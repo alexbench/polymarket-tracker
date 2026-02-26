@@ -121,8 +121,13 @@ export function LandingPage() {
 
       {/* Footer */}
       <footer className="border-t border-border mt-20">
-        <div className="max-w-6xl mx-auto px-4 py-8 text-center text-sm text-muted-foreground">
+        <div className="max-w-6xl mx-auto px-4 py-8 text-center text-sm text-muted-foreground space-y-2">
           <p>PolyTrax - Real-time wallet monitoring for prediction markets</p>
+          <p className="flex items-center justify-center gap-3">
+            <Link href="/about" className="text-accent hover:underline">About Us</Link>
+            <span>·</span>
+            <Link href="/terms" className="text-accent hover:underline">Terms and Conditions</Link>
+          </p>
         </div>
       </footer>
     </div>

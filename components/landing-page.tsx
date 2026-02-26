@@ -46,7 +46,7 @@ export function LandingPage() {
             </Link>
           </div>
           <p className="text-sm text-muted-foreground">
-            No credit card required to start. $50/month after trial.
+            Free 1-week trial - $50/month after that.
           </p>
         </div>
 
